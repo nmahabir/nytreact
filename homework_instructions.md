@@ -24,6 +24,12 @@ var Schema = mongoose.Schema -->
 
 4. At a minimum, articles should have each of the following fields:
 
+<!-- const articleSchema = new Schema({
+  title: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+  url: String
+  }); -->
+
    * `title` (Title of the stored article from nytimes.com)
 
    * `date` (publish date and time of the article)
