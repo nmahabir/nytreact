@@ -26,11 +26,6 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-// Connect to the Mongo DB
-mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/sitescraper",
-  { useNewUrlParser: true }
-);
 
 // Define API routes here
 app.get("/", function(req, res) {
