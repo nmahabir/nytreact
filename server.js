@@ -2,8 +2,9 @@ const express = require("express");
 const path = require("path");
 const PORT = process.env.PORT || 3001;
 const app = express();
+const routes = require("./routes");
 const logger = require("morgan");
-const mongoose = require("mongoose");
+const { mongoose } = require('./db/db');
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -12,8 +13,9 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 // Require all models
-const db = require("./models");
-
+// const db = require("./models");
+const Article = require('./db/collections/articles');
+const Note = require('./db/collections/note');
 // Define middleware here
 
 // Use morgan logger for logging requests
@@ -40,7 +42,7 @@ app.get("/scrape", function(req, res) {
     const $ = cheerio.load(response.data);
     // article.css-180b3ld
     // console.log(response.data);
-    // 3Now, we grab every h2 within an article tag, and do the following:
+    // Now, we grab every h2 within an article tag, and do the following:
     $(".story-body").each(function(i, element) {
       // Save an empty result object
       let result = {};
@@ -59,7 +61,7 @@ app.get("/scrape", function(req, res) {
         .trim();
       console.log("Result: " + result);
       //   Create a new Article using the `result` object built from scraping
-      db.article.create(result).then(function(dbArticle) {
+      Article.create(result).then(function(dbArticle) {
         // View the added result in the console
         // console.log("DB Article: " + dbArticle);
         res.render("index", { articles: dbArticle });
@@ -74,14 +76,14 @@ app.get("/scrape", function(req, res) {
 
 // Route for getting all Articles from the db
 app.get("/articles", function(req, res) {
-  db.article.find({}).then(function(dbArticle) {
+  Article.find({}).then(function(dbArticle) {
     res.render("index", { articles: dbArticle });
   });
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
-  db.article
+  Article
     .find({ _id: req.params.id })
     .populate("note")
     .then(function(dbArticle) {
@@ -91,10 +93,10 @@ app.get("/articles/:id", function(req, res) {
 
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function(req, res) {
-  db.note
+  Note
     .create(req.body)
     .then(function(dbNote) {
-      return db.article.findOneAndUpdate(
+      return Article.findOneAndUpdate(
         {
           _id: req.params.id
         },
@@ -110,6 +112,8 @@ app.post("/articles/:id", function(req, res) {
       res.render("index", { articles: dbArticle });
     });
 });
+
+app.use(routes);
 
 // Send every other request to the React app
 // Define any API routes before this runs
