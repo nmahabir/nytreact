@@ -42,13 +42,13 @@ app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
   axios.get("https://www.nytimes.com/section/travel").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
-    var $ = cheerio.load(response.data);
+    const $ = cheerio.load(response.data);
     // article.css-180b3ld
     // console.log(response.data);
     // 3Now, we grab every h2 within an article tag, and do the following:
     $(".story-body").each(function(i, element) {
       // Save an empty result object
-      var result = {};
+      let result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this)
