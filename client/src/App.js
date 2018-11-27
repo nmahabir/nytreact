@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
+import Nav from './components/Nav'
+import Card from './components/Card'
+import Jumbotron from './components/Jumbotron'
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+const App = () => (
+  <Router>
+    <div>
+      <Nav />
+        <Switch>
+          <Route exact path='/' component={Articles} />
+          <Route exact path='/articles' component={Articles} />
+          <Route exact path='/articles:id' component={SavedArticles} />
+          
+        </Switch>
+    </div>
+  </Router>
+);
 
 export default App;
+
+
